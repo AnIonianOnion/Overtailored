@@ -1,0 +1,8 @@
+changes (most often to least):
+- renamed Forging to Sewing (in classes, methods, and variables).
+    - renamed AnvilTier to SewingMachineTier
+    - renamed ForgingQuality to SewingQuality
+    - renamed BlueprintQuality to PatternQuality
+- removed Cooling, Knapping, Casting, and Alloying recipes and interactinos as these aren't themed around tailoring.
+- removed JEI support, because dependencies of ISS were incompatible
+- added custom 1x2 multiblock model for SewingMachineBlock and block entities.

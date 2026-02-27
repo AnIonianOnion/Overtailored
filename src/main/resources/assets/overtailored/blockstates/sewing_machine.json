@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "overtailored:block/sewing_machine", "y": 180 },
+    "facing=south": { "model": "overtailored:block/sewing_machine", "y": 0 },
+    "facing=west":  { "model": "overtailored:block/sewing_machine", "y": 90 },
+    "facing=east":  { "model": "overtailored:block/sewing_machine", "y": 270 }
+  }
+}

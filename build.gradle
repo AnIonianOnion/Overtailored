@@ -2,7 +2,6 @@ plugins {
     id 'dev.architectury.loom' version '1.11-SNAPSHOT'
     id 'maven-publish'
 }
-
 group = project.maven_group
 version = project.mod_version
 
@@ -11,16 +10,7 @@ base {
 }
 
 repositories {
-    maven {
-        // location of the maven that hosts JEI files since January 2023
-        name = "Jared's maven"
-        url = "https://maven.blamejared.com/"
-    }
-    maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = "https://modmaven.dev"
-    }
+
     // Add NeoForged repository.
     maven {
         name = 'NeoForged'
@@ -36,6 +26,28 @@ repositories {
     maven {
         name = "TerraformersMC"
         url = "https://maven.terraformersmc.com/"
+    }
+
+    //Iron's Spells n Spellbooks
+    maven {
+        name = "Iron's Maven - Release"
+        url = "https://code.redspace.io/releases"
+    }
+    maven {
+        name = 'GeckoLib'
+        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content {
+            includeGroup("software.bernie.geckolib")
+        }
+    }
+    //PlayerAnimator
+    maven {
+        name "KosmX's maven"
+        url 'https://maven.kosmx.dev/'
+    }
+    maven {
+        name = "Curios"
+        url = uri("https://maven.theillusivec4.top/")
     }
 
     exclusiveContent {
@@ -54,16 +66,23 @@ repositories {
 def generatedResources = file("src/generated")
 sourceSets {
     main {
+        resources.srcDir 'src/main/resources' //must include for manual data/overtailored directory within resources directory
         resources.srcDir generatedResources
     }
 }
+
+//must include for manual data/overtailored directory within resources directory
+tasks.withType(Jar).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 
 loom {
     silentMojangMappingsLicense()
     runs {
         data {
             data()
-            programArgs "--all", "--mod", "overgeared"
+            programArgs "--all", "--mod", "overtailored"
             programArgs "--output", generatedResources.absolutePath
             programArgs "--existing", file("src/main/resources").absolutePath
         }
@@ -77,18 +96,26 @@ dependencies {
         parchment("org.parchmentmc.data:parchment-$project.minecraft_version:$project.parchment_version@zip")
     }
     neoForge "net.neoforged:neoforge:$project.neoforge_version"
-    // compile against the JEI API but do not include it at runtime
-    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
-    // at runtime, use the full JEI jar for NeoForge
-    runtimeOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+
+    //removed JEI, only keeping EMI, because this ver of ISS is incompatible
 
     compileOnly "dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api"
     runtimeOnly "dev.emi:emi-neoforge:${emi_version}+${minecraft_version}"
 
     modImplementation "maven.modrinth:polymorph:${polymorph_version}"
+
+    implementation "io.redspace:irons_spellbooks:${irons_spells_version}"
+
+    implementation "software.bernie.geckolib:geckolib-neoforge-${minecraft_version}:${geckolib_version}"
+
+    modImplementation("dev.kosmx.player-anim:player-animation-lib-forge:${player_anim}")
+
+    runtimeOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
 }
 
 processResources {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE //must include
     var replaceProperties = [
             minecraft_version      : minecraft_version,
             minecraft_version_range: minecraft_version_range,
